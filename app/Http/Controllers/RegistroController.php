@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class RegistroController extends Controller
 {
@@ -14,12 +13,11 @@ class RegistroController extends Controller
             'email' => 'required|email|unique:usuarios,email',
             'senha' => 'required|min:6'
         ]);
-        
 
         $usuario = Usuario::create([
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
-            'senha' => Hash::make($validatedData['senha']),
+            'senha' => bcrypt($validatedData['senha']),
         ]);
 
         return response()->json(['usuario' => $usuario], 201);

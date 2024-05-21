@@ -20,13 +20,13 @@ class LoginController extends Controller
         $usuario = Usuario::where('email', $credentials['email'])->first();
 
         if (!$usuario || !Hash::check($credentials['senha'], $usuario->senha)) {
-            return response()->json(['message' => 'Credenciais inválidas'], 401);
+            return response()->json(['success' => false, 'message' => 'Credenciais inválidas'], 401);
         }
 
         // Aqui você pode implementar a geração de um token ou sessão conforme sua preferência
         // Exemplo com Sanctum para API Token
         $token = $usuario->createToken('authToken')->plainTextToken;
 
-        return response()->json(['usuario' => $usuario, 'token' => $token]);
+        return response()->json(['success' => true, 'usuario' => $usuario, 'token' => $token]);
     }
 }
