@@ -14,3 +14,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/usuario/{id}', [UsuarioController::class, 'update']);
     Route::delete('/usuario/{id}', [UsuarioController::class, 'destroy']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/usuario', [UsuarioController::class, 'show']);
+    Route::post('/usuario/avatar', [UsuarioController::class, 'updateAvatar']);
+});
+
