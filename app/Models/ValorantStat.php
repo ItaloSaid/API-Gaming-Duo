@@ -16,10 +16,4 @@ class ValorantStat extends Model
         'agente_preferido',
         'funcao_preferida',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
-
