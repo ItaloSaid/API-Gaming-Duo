@@ -16,12 +16,10 @@ class CreateValorantStatsTable extends Migration
         Schema::create('valorant_stats', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('username');
+            $table->string('jogador');
             $table->string('rank')->nullable();
-            $table->integer('score')->nullable();
-            $table->integer('kills')->nullable();
-            $table->integer('deaths')->nullable();
-            $table->integer('assists')->nullable();
+            $table->string('agente_preferido')->nullable();
+            $table->string('funcao_preferida')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
