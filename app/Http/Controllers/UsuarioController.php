@@ -11,9 +11,7 @@ class UsuarioController extends Controller
 {
     public function show()
     {
-        return response()->json([
-            'usuario' => Auth::user()
-        ]);
+        return response()->json(['usuario' => Auth::user()]);
     }
 
     public function updateAvatar(Request $request)
@@ -23,7 +21,6 @@ class UsuarioController extends Controller
         ]);
 
         $user = Auth::user();
-
         if ($request->hasFile('avatar')) {
             $image = $request->file('avatar');
             $name = time() . '.' . $image->getClientOriginalExtension();
@@ -100,4 +97,58 @@ class UsuarioController extends Controller
 
         return response()->json(['success' => true, 'usuario' => $user]);
     }
+
+    public function recommended(Request $request)
+    {
+        $user = Auth::user();
+
+
+        $elos = [
+            'Ferro I', 'Ferro II', 'Ferro III',
+            'Bronze I', 'Bronze II', 'Bronze III',
+            'Prata I', 'Prata II', 'Prata III',
+            'Ouro I', 'Ouro II', 'Ouro III',
+            'Platina I', 'Platina II', 'Platina III',
+            'Diamante I', 'Diamante II', 'Diamante III',
+            'Ascendente I', 'Ascendente II', 'Ascendente III',
+            'Imortal I', 'Imortal II', 'Imortal III',
+            'Radiante'
+        ];
+
+
+        $currentEloIndex = array_search($user->rank, $elos);
+
+
+        $lowerEloIndex = max(0, $currentEloIndex - 1);
+        $upperEloIndex = min(count($elos) - 1, $currentEloIndex + 1);
+
+
+        $desiredElos = array_slice($elos, $lowerEloIndex, $upperEloIndex - $lowerEloIndex + 1);
+
+
+        $recommendedPlayers = Usuario::whereIn('rank', $desiredElos)
+            ->where('id', '!=', $user->id)
+            ->get();
+
+        return response()->json($recommendedPlayers);
+    }
+
+
+    public function filter(Request $request)
+    {
+        $user = Auth::user();
+        $filters = $request->only(['ranking', 'role']);
+        $filteredPlayers = Usuario::where(function ($query) use ($filters, $user) {
+            if ($filters['ranking'] && $filters['ranking'] !== 'Não Selecionado') {
+                $query->where('rank', $filters['ranking']);
+            }
+            if ($filters['role'] && $filters['role'] !== 'Não Selecionado') {
+                $query->where('preferred_function', $filters['role']);
+            }
+            $query->where('id', '!=', $user->id);
+        })->get();
+
+        return response()->json($filteredPlayers);
+    }
 }
+
