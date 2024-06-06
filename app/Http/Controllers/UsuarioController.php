@@ -63,6 +63,12 @@ class UsuarioController extends Controller
         if ($request->has('rank')) {
             $rules['rank'] = 'required';
         }
+        if ($request->has('preferred_agent')) {
+            $rules['preferred_agent'] = 'required';
+        }
+        if ($request->has('preferred_function')) {
+            $rules['preferred_function'] = 'required';
+        }
 
         $request->validate($rules);
 
@@ -80,6 +86,14 @@ class UsuarioController extends Controller
 
         if ($request->filled('rank')) {
             $user->rank = $request->rank;
+        }
+
+        if ($request->filled('preferred_agent')) {
+            $user->preferred_agent = $request->preferred_agent;
+        }
+
+        if ($request->filled('preferred_function')) {
+            $user->preferred_function = $request->preferred_function;
         }
 
         $user->save();
