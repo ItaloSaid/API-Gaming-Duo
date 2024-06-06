@@ -102,7 +102,6 @@ class UsuarioController extends Controller
     {
         $user = Auth::user();
 
-
         $elos = [
             'Ferro I', 'Ferro II', 'Ferro III',
             'Bronze I', 'Bronze II', 'Bronze III',
@@ -115,19 +114,25 @@ class UsuarioController extends Controller
             'Radiante'
         ];
 
-
         $currentEloIndex = array_search($user->rank, $elos);
-
 
         $lowerEloIndex = max(0, $currentEloIndex - 1);
         $upperEloIndex = min(count($elos) - 1, $currentEloIndex + 1);
 
-
         $desiredElos = array_slice($elos, $lowerEloIndex, $upperEloIndex - $lowerEloIndex + 1);
 
+        $functionMap = [
+            'Duelista' => ['Controlador', 'Iniciador', 'Sentinela'],
+            'Controlador' => ['Duelista', 'Iniciador', 'Sentinela'],
+            'Iniciador' => ['Duelista', 'Controlador', 'Sentinela'],
+            'Sentinela' => ['Duelista', 'Controlador', 'Iniciador']
+        ];
+
+        $desiredFunctions = $functionMap[$user->preferred_function] ?? ['Duelista', 'Controlador', 'Iniciador', 'Sentinela'];
 
         $recommendedPlayers = Usuario::whereIn('rank', $desiredElos)
             ->where('id', '!=', $user->id)
+            ->whereIn('preferred_function', $desiredFunctions)
             ->get();
 
         return response()->json($recommendedPlayers);
