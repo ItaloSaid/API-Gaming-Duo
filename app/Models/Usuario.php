@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use App\Notifications\CustomResetPassword;
 
 class Usuario extends Authenticatable
 {
@@ -24,5 +25,10 @@ class Usuario extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['senha'] = bcrypt($value);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
     }
 }
