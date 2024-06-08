@@ -27,7 +27,7 @@ class ResetPasswordController extends Controller
         );
 
         return $response == Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Password reset successfully.'])
+            ? response()->json(['message' => 'Redefinição de senha com sucesso.'])
             : response()->json(['email' => [trans($response)]], 422);
     }
 }
