@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class Usuario extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, CanResetPassword;
 
-    protected $table = 'usuarios'; // Especifica a tabela 'usuarios'
+    protected $table = 'usuarios';
 
     protected $fillable = [
         'username', 'email', 'senha', 'avatar', 'rank', 'gamename'
