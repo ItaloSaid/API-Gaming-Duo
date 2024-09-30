@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\NotificationController;
 
 Route::post('/register', [RegistroController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
@@ -18,6 +19,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/usuario/avatar', [UsuarioController::class, 'updateAvatar']);
     Route::get('/usuario/recommended', [UsuarioController::class, 'recommended']);
     Route::post('/usuario/filter', [UsuarioController::class, 'filter']);
+    Route::post('/notifications/send', [NotificationController::class, 'sendConnectionRequest']);
+    Route::post('/notifications/respond/{id}', [NotificationController::class, 'respondToRequest']);
 });
 
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
