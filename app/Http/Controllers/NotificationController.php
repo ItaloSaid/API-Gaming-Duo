@@ -67,4 +67,13 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Notificação atualizada com sucesso', 'notification' => $notification], 200);
     }
+
+    public function getPendingNotifications()
+    {
+        // Obter o ID do usuário autenticado
+        $userId = Auth::id();
+
+        // Retornar o ID do usuário autenticado para verificar
+        return response()->json(['auth_id' => $userId]);
+    }
 }
