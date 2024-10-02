@@ -78,12 +78,25 @@ class NotificationController extends Controller
             return response()->json(['message' => 'Usuário não autenticado'], 401);
         }
 
-        // Buscar todas as notificações pendentes para esse usuário
+        // Buscar todas as notificações pendentes para esse usuário e carregar o remetente (sender) da tabela usuarios
         $notifications = Notification::where('receiver_id', $userId)
             ->where('status', 'pending')
+            ->with('sender') // Carregar as informações do remetente da tabela usuarios
             ->get();
 
-        // Retornar as notificações pendentes
-        return response()->json(['notifications' => $notifications], 200);
+        // Retornar as notificações com o nome do remetente (username)
+        return response()->json([
+            'notifications' => $notifications->map(function ($notification) {
+                // Verificar se o remetente existe antes de acessar o username
+                return [
+                    'id' => $notification->id,
+                    'sender_nick' => $notification->sender ? $notification->sender->username : 'Usuário desconhecido', // Evita erro se sender for null
+                    'receiver_id' => $notification->receiver_id,
+                    'status' => $notification->status,
+                    'created_at' => $notification->created_at,
+                    'updated_at' => $notification->updated_at,
+                ];
+            })
+        ], 200);
     }
 }
