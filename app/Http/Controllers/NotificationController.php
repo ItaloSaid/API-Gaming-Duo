@@ -73,7 +73,17 @@ class NotificationController extends Controller
         // Obter o ID do usuário autenticado
         $userId = Auth::id();
 
-        // Retornar o ID do usuário autenticado para verificar
-        return response()->json(['auth_id' => $userId]);
+        // Verificar se o usuário está autenticado
+        if (!$userId) {
+            return response()->json(['message' => 'Usuário não autenticado'], 401);
+        }
+
+        // Buscar todas as notificações pendentes para esse usuário
+        $notifications = Notification::where('receiver_id', $userId)
+            ->where('status', 'pending')
+            ->get();
+
+        // Retornar as notificações pendentes
+        return response()->json(['notifications' => $notifications], 200);
     }
 }
