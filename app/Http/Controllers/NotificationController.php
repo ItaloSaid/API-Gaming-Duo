@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Events\ConnectionRequestSent;
+
 
 class NotificationController extends Controller
 {
@@ -39,6 +41,7 @@ class NotificationController extends Controller
             'receiver_id' => $validatedData['receiver_id'],
             'status' => 'pending',
         ]);
+        event(new ConnectionRequestSent($notification));
 
         // Retornar sucesso
         return response()->json(['notification' => $notification], 201);
