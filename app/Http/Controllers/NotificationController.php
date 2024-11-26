@@ -225,4 +225,27 @@ public function getMatchesHistory()
     return response()->json(['matches' => $matches], 200);
 }
 
+public function revoke($id)
+{
+    $userId = Auth::id();
+
+    $notification = Notification::find($id);
+
+    if (!$notification) {
+        return response()->json(['message' => 'Notificação não encontrada'], 404);
+    }
+
+    // Verificar se o usuário autenticado é o remetente ou o destinatário
+    if ($notification->sender_id !== $userId && $notification->receiver_id !== $userId) {
+        return response()->json(['message' => 'Você não tem permissão para revogar esta notificação'], 403);
+    }
+
+    // Atualizar o status para 'rejected'
+    $notification->status = 'rejected';
+    $notification->save();
+
+    return response()->json(['message' => 'Notificação revogada com sucesso'], 200);
+}
+
+
 }
