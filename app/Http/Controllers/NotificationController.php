@@ -102,4 +102,24 @@ class NotificationController extends Controller
             })
         ], 200);
     }
+
+    public function deleteNotification($id)
+    {
+        $notification = Notification::find($id);
+
+        // Verificar se a notificação existe
+        if (!$notification) {
+            return response()->json(['message' => 'Notificação não encontrada'], 404);
+        }
+
+        // Verificar se o usuário tem permissão para deletar (apenas o destinatário pode deletar)
+        if ($notification->receiver_id !== Auth::id()) {
+            return response()->json(['message' => 'Você não tem permissão para deletar esta notificação'], 403);
+        }
+
+        // Deletar a notificação
+        $notification->delete();
+
+        return response()->json(['message' => 'Notificação deletada com sucesso'], 200);
+    }
 }
