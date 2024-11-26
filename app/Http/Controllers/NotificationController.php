@@ -151,5 +151,37 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Notificação aceita com sucesso'], 200);
     }
+
+    public function getUserNotifications()
+{
+    // Obter o ID do usuário autenticado
+    $userId = Auth::id();
+
+    // Verificar se o usuário está autenticado
+    if (!$userId) {
+        return response()->json(['message' => 'Usuário não autenticado'], 401);
+    }
+
+    // Buscar notificações com status 'pending' ou 'accepted'
+    $notifications = Notification::where('receiver_id', $userId)
+        ->whereIn('status', ['pending', 'accepted'])
+        ->with('sender') // Carregar as informações do remetente da tabela usuarios
+        ->get();
+
+    // Retornar as notificações com o nome do remetente (username)
+    return response()->json([
+        'notifications' => $notifications->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'sender_nick' => $notification->sender ? $notification->sender->username : 'Usuário desconhecido',
+                'sender_username' => $notification->sender ? $notification->sender->username : null,
+                'receiver_id' => $notification->receiver_id,
+                'status' => $notification->status,
+                'created_at' => $notification->created_at,
+                'updated_at' => $notification->updated_at,
+            ];
+        })
+    ], 200);
+}
     
 }
