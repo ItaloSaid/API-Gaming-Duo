@@ -184,4 +184,45 @@ class NotificationController extends Controller
     ], 200);
 }
     
+public function getMatchesHistory()
+{
+    $userId = Auth::id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Usuário não autenticado'], 401);
+    }
+
+    // Buscar todas as notificações onde o usuário é o remetente ou o destinatário
+    $notifications = Notification::where(function($query) use ($userId) {
+        $query->where('sender_id', $userId)
+              ->orWhere('receiver_id', $userId);
+    })
+    ->with(['sender', 'receiver'])
+    ->get();
+
+    // Processar as notificações para preparar os dados
+    $matches = $notifications->map(function ($notification) use ($userId) {
+        // Determinar quem é o outro usuário
+        if ($notification->sender_id == $userId) {
+            // O outro usuário é o destinatário
+            $otherUser = $notification->receiver;
+        } else {
+            // O outro usuário é o remetente
+            $otherUser = $notification->sender;
+        }
+
+        return [
+            'id' => $notification->id,
+            'user_id' => $otherUser ? $otherUser->id : null,
+            'nick' => $otherUser ? $otherUser->username : 'Usuário desconhecido',
+            'username' => $otherUser ? $otherUser->username : null,
+            'status' => $notification->status,
+            'created_at' => $notification->created_at,
+            'updated_at' => $notification->updated_at,
+        ];
+    });
+
+    return response()->json(['matches' => $matches], 200);
+}
+
 }
