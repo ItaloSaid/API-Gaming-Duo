@@ -155,5 +155,16 @@ class UsuarioController extends Controller
 
         return response()->json($filteredPlayers);
     }
+
+    public function getUserByUsername($username)
+    {
+        $user = Usuario::where('username', $username)->first();
+    
+        if (!$user) {
+            return response()->json(['error' => 'Usuário não encontrado'], 404);
+        }
+    
+        return response()->json(['usuario' => $user]);
+    }     
 }
 
