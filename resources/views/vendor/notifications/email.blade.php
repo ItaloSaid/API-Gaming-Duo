@@ -62,7 +62,6 @@
 <body>
 <div class="container">
     <div class="header">
-        <img src="https://cdn.discordapp.com/attachments/809803750835224586/1248907240489091133/il_fullxfull.3329746240_dxht_1.png?ex=66655f01&is=66640d81&hm=983db171692dc8bd3ac4c7997353152f107aed1d2e275890b4771c573823f9aa&" alt="Gaming Duo">
         <h1>Gaming Duo</h1>
     </div>
     <div class="content">
