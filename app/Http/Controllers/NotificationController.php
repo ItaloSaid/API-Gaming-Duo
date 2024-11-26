@@ -122,4 +122,34 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Notificação deletada com sucesso'], 200);
     }
+
+    public function accept(Request $request, $id)
+    {
+        // Obter o ID do usuário autenticado
+        $userId = Auth::id();
+
+        // Verificar se o usuário está autenticado
+        if (!$userId) {
+            return response()->json(['message' => 'Usuário não autenticado'], 401);
+        }
+
+        // Encontrar a notificação
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            return response()->json(['message' => 'Notificação não encontrada'], 404);
+        }
+
+        // Verificar se o usuário autenticado é o destinatário da notificação
+        if ($notification->receiver_id != $userId) {
+            return response()->json(['message' => 'Você não tem permissão para aceitar esta notificação'], 403);
+        }
+
+        // Atualizar o status para 'accepted'
+        $notification->status = 'accepted';
+        $notification->save();
+
+        return response()->json(['message' => 'Notificação aceita com sucesso'], 200);
+    }
+    
 }

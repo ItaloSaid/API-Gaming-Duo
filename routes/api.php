@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications/pending', [NotificationController::class, 'getPendingNotifications']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'deleteNotification']);
     Route::get('/usuario/{username}', [UsuarioController::class, 'getUserByUsername']);
+    Route::put('/notifications/{id}/accept', [NotificationController::class, 'accept']);
 });
 
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
